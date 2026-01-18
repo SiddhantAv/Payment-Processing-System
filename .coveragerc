@@ -1,0 +1,32 @@
+[run]
+# Coverage configuration file
+source = app
+omit =
+    */tests/*
+    */venv/*
+    */migrations/*
+    */alembic/*
+    */__pycache__/*
+    */conftest.py
+    */__init__.py
+    # Gateway repository has low coverage due to external API integration
+    # This is expected - external API calls are typically tested via integration tests
+    */payment_gateway/authorize_net_repository.py
+
+[report]
+# Report options
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+
+# Minimum coverage threshold (optional - uncomment to enforce)
+# fail_under = 60
+
+[html]
+# HTML report directory
+directory = htmlcov

@@ -1,0 +1,68 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: pps_db
+    environment:
+      POSTGRES_DB: pps_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pps_network
+
+  # FastAPI Application
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: pps_app
+    env_file:
+      - ../.env
+    environment:
+      # Database connection
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/pps_db
+      
+      # JWT Settings (required - set in .env or override here)
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      
+      # Authorize.Net Settings (required - set in .env or override here)
+      AUTHORIZE_NET_API_LOGIN_ID: ${AUTHORIZE_NET_API_LOGIN_ID}
+      AUTHORIZE_NET_TRANSACTION_KEY: ${AUTHORIZE_NET_TRANSACTION_KEY}
+      AUTHORIZE_NET_ENVIRONMENT: ${AUTHORIZE_NET_ENVIRONMENT:-sandbox}
+      
+      # Application Settings
+      PROJECT_NAME: Payment Processing System
+      API_V1_PREFIX: /api/v1
+      DEBUG: ${DEBUG:-False}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    # volumes:
+      # Optional: Mount .env file if it exists (commented out - use environment variables in docker-compose instead)
+      # - ../.env:/app/.env:ro
+    networks:
+      - pps_network
+    restart: unless-stopped
+
+networks:
+  pps_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

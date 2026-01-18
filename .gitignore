@@ -1,0 +1,413 @@
+# =============================================================================
+# Payment Processing System - .gitignore
+# Security-focused ignore patterns
+# =============================================================================
+
+# =============================================================================
+# CRITICAL SECURITY - NEVER COMMIT THESE
+# =============================================================================
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.env
+.env.local
+.env.*.local
+
+# Secrets and credentials
+secrets/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+credentials.json
+config.ini
+secrets.yaml
+secrets.yml
+
+# API keys and tokens
+*_key.txt
+*_secret.txt
+api_keys.txt
+tokens.txt
+
+# =============================================================================
+# Python
+# =============================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+*.coverprofile
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff (if applicable)
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff (if applicable)
+instance/
+.webassets-cache
+
+# Scrapy stuff (if applicable)
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# pdm
+.pdm.toml
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.venv
+venv/
+ENV/
+env/
+.ENV
+.venv
+virtualenv/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# =============================================================================
+# IDEs and Editors
+# =============================================================================
+
+# VSCode
+.vscode/
+*.code-workspace
+.history/
+
+# PyCharm / IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# =============================================================================
+# Operating System Files
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# Database
+# =============================================================================
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+
+# PostgreSQL
+*.sql.backup
+*.sql.dump
+pgdata/
+postgres-data/
+
+# MySQL
+*.sql.gz
+*.sql.bz2
+
+# Database migrations (keep Alembic versions, but ignore local state)
+# alembic/versions/ is kept, but local migration state can be ignored
+# Uncomment if you want to ignore migration files (NOT RECOMMENDED):
+# alembic/versions/*.py
+# !alembic/versions/__init__.py
+
+# =============================================================================
+# Docker
+# =============================================================================
+
+# Docker volumes and data
+docker/data/
+docker/volumes/
+docker/postgres-data/
+*.dockerignore.local
+
+# Docker Compose override files (may contain secrets)
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.*.local.yml
+
+# =============================================================================
+# Logs and Temporary Files
+# =============================================================================
+
+# Log files
+*.log
+logs/
+*.log.*
+log/
+*.out
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+
+# Backup files
+*.backup
+*.old
+*.orig
+
+# =============================================================================
+# Project-Specific
+# =============================================================================
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+test-results/
+test-reports/
+
+# Screenshots (optional - uncomment if you don't want to commit screenshots)
+# Screenshots/
+
+# Documentation builds
+docs/_build/
+site/
+
+# Local configuration overrides
+local_config.py
+local_settings.py
+
+# Alembic local state (keep versions, ignore local env)
+# alembic.ini.local (if you have local overrides)
+
+# =============================================================================
+# Security Scans and Reports
+# =============================================================================
+
+# Security scan reports
+security-scan-results/
+*.security-report
+vulnerability-reports/
+
+# Dependency check reports
+dependency-check-report/
+*.dependency-check
+
+# =============================================================================
+# Miscellaneous
+# =============================================================================
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Package files
+*.deb
+*.rpm
+
+# Lock files (optional - some teams commit these, others don't)
+# Uncomment if you don't want to commit lock files:
+# poetry.lock
+# Pipfile.lock
+# package-lock.json
+# yarn.lock
+
+# =============================================================================
+# Notes
+# =============================================================================
+# 
+# IMPORTANT SECURITY REMINDERS:
+# 1. NEVER commit .env files or any file containing secrets
+# 2. Use .env.example as a template (without real values)
+# 3. Rotate secrets if accidentally committed
+# 4. Review git history before pushing if unsure
+# 5. Use git-secrets or similar tools to prevent accidental commits
+# 
+# =============================================================================

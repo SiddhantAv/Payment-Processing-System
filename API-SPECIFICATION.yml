@@ -1,0 +1,261 @@
+openapi: 3.0.3
+info:
+  title: Payment Processing System API
+  version: "1.0"
+  description: Simple API specification for the implemented endpoints.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 1 }
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+    TokenResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        token_type: { type: string, example: bearer }
+    RegisterResponse:
+      type: object
+      properties:
+        id: { type: integer }
+        email: { type: string }
+        created_at: { type: string, format: date-time }
+    PurchaseRequest:
+      type: object
+      required: [amount, card_number, expiry_month, expiry_year, cvv]
+      properties:
+        amount: { type: number, format: decimal }
+        currency: { type: string, example: USD }
+        card_number: { type: string }
+        expiry_month: { type: integer }
+        expiry_year: { type: integer }
+        cvv: { type: string }
+    PurchaseResponse:
+      type: object
+      properties:
+        order_id: { type: integer }
+        transaction_id: { type: integer }
+        gateway_transaction_id: { type: string, nullable: true }
+        status: { type: string }
+        message: { type: string }
+    AuthorizeRequest:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseRequest'
+    AuthorizeResponse:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseResponse'
+    CaptureRequest:
+      type: object
+      required: [order_id, amount]
+      properties:
+        order_id: { type: integer }
+        amount: { type: number, format: decimal }
+    CaptureResponse:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseResponse'
+    CancelRequest:
+      type: object
+      required: [order_id]
+      properties:
+        order_id: { type: integer }
+    CancelResponse:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseResponse'
+    RefundRequest:
+      type: object
+      required: [order_id, amount, last_four, expiry_month, expiry_year]
+      properties:
+        order_id: { type: integer }
+        amount: { type: number, format: decimal }
+        last_four: { type: string, minLength: 4, maxLength: 4 }
+        expiry_month: { type: integer }
+        expiry_year: { type: integer }
+    RefundResponse:
+      allOf:
+        - $ref: '#/components/schemas/PurchaseResponse'
+    TransactionSummary:
+      type: object
+      properties:
+        transaction_id: { type: integer }
+        type: { type: string }
+        status: { type: string }
+        amount: { type: number, format: decimal }
+        gateway_transaction_id: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+    OrderSummaryResponse:
+      type: object
+      properties:
+        order_id: { type: integer }
+        order_status: { type: string }
+        amount: { type: number, format: decimal }
+        currency: { type: string }
+        created_at: { type: string, format: date-time }
+        transactions:
+          type: array
+          items: { $ref: '#/components/schemas/TransactionSummary' }
+    OrderDetailResponse:
+      type: object
+      properties:
+        order_id: { type: integer }
+        order_status: { type: string }
+        amount: { type: number, format: decimal }
+        currency: { type: string }
+        created_at: { type: string, format: date-time }
+        transactions:
+          type: array
+          items: { $ref: '#/components/schemas/TransactionSummary' }
+        last_successful_transaction:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/TransactionSummary'
+        refundable_amount: { type: number, format: decimal }
+        can_capture: { type: boolean }
+        can_cancel: { type: boolean }
+        can_refund: { type: boolean }
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterRequest' }
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RegisterResponse' }
+        '409':
+          description: Email already exists
+  /auth/login:
+    post:
+      summary: Login and receive JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TokenResponse' }
+        '401':
+          description: Invalid credentials
+  /payments/purchase:
+    post:
+      summary: Purchase (authorize + capture)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PurchaseRequest' }
+      responses:
+        '200':
+          description: Purchase result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseResponse' }
+  /payments/authorize:
+    post:
+      summary: Authorize only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthorizeRequest' }
+      responses:
+        '200':
+          description: Authorization result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthorizeResponse' }
+  /payments/capture:
+    post:
+      summary: Capture a previous authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CaptureRequest' }
+      responses:
+        '200':
+          description: Capture result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CaptureResponse' }
+  /payments/cancel:
+    post:
+      summary: Cancel/Void a previous authorization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CancelRequest' }
+      responses:
+        '200':
+          description: Cancel result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CancelResponse' }
+  /payments/refund:
+    post:
+      summary: Refund a previous capture or purchase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RefundRequest' }
+      responses:
+        '200':
+          description: Refund result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundResponse' }
+  /payments/orders:
+    get:
+      summary: List orders with transactions
+      responses:
+        '200':
+          description: Orders list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/OrderSummaryResponse' }
+  /payments/orders/{order_id}:
+    get:
+      summary: Get order details with transaction history
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Order detail
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderDetailResponse' }
